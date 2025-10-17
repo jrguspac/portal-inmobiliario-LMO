@@ -41,8 +41,6 @@ body {
 /* LOGO CON EFECTO ACORDEÓN */
 /* ===== LOGO CON GIRO VERTICAL + EFECTO ACORDEÓN ===== */
 
-/* ===== LOGO CON GIRO VERTICAL + EFECTO ACORDEÓN ===== */
-
 .logo {
     display: flex;
     align-items: center;
@@ -73,9 +71,10 @@ body {
 }
 
 .logo-text {
-    display: flex;
+    display: flex !important; /* Forzar visibilidad */
     flex-direction: column;
     line-height: 1.1;
+    visibility: visible !important;
 }
 
 .logo-line-1 {
@@ -83,13 +82,14 @@ body {
     font-weight: bold;
     color: white;
     text-shadow: 0px 1px 2px rgba(0, 0, 0, 0.8);
+    display: block !important;
 }
 
 .logo-line-2 {
     font-size: 0.9rem;
     font-weight: 600;
     height: 20px;
-    display: flex;
+    display: flex !important;
     align-items: center;
 }
 
@@ -504,6 +504,59 @@ body {
 
 /* ===== RESPONSIVE MEJORADO ===== */
 @media (max-width: 768px) {
+    .header .container {
+        padding: 0 15px;
+        justify-content: flex-start; /* Alinear a la izquierda */
+    }
+    
+    .logo {
+        gap: 0.6rem;
+        width: auto; /* No ocupar todo el ancho */
+        flex-shrink: 0; /* Evitar que se encoja */
+    }
+    
+    .logo-img {
+        height: 40px;
+        max-width: 80px;
+        flex-shrink: 0;
+    }
+    
+    .logo-text {
+        display: flex !important;
+        visibility: visible !important;
+        min-width: 120px; /* Ancho mínimo para que se vea */
+    }
+    
+    .logo-line-1 {
+        font-size: 0.95rem;
+        white-space: nowrap;
+        display: block !important;
+    }
+    
+    .logo-line-2 {
+        font-size: 0.75rem;
+        height: 16px;
+        display: flex !important;
+    }
+
+
+    
+    /* Ocultar navegación en móvil para dar espacio */
+    .navigation {
+        display: none;
+    }
+    
+    /* Asegurar que el acrónimo sea visible */
+    .acronym {
+        min-width: 60px;
+    }
+    
+    .letter {
+        font-size: 0.7rem;
+        padding: 1px 4px;
+        min-width: 15px;
+    }
+    
     .filters-grid {
         grid-template-columns: 1fr;
     }
@@ -627,6 +680,34 @@ body {
         font-size: 1.5rem;
     }
 }
+}
+
+    .acronym.expanded .letter:nth-child(1) { min-width: 25px; }
+    .acronym.expanded .letter:nth-child(2) { min-width: 50px; }
+    .acronym.expanded .letter:nth-child(3) { min-width: 55px; }
+
+
+@media (max-width: 480px) {
+    .logo {
+        gap: 0.4rem;
+    }
+    
+    .logo-img {
+        height: 35px;
+        max-width: 70px;
+    }
+    
+    .logo-text {
+        min-width: 110px;
+    }
+    
+    .logo-line-1 {
+        font-size: 0.9rem;
+    }
+    
+    .logo-line-2 {
+        font-size: 0.7rem;
+    }
 }
 
 /* ===== ESTILOS PARA PROPIEDADES ===== */
