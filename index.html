@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mi Vivienda - La Mejor Opción</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <!-- HEADER - Encabezado con logo y menú -->
+ <header class="header">
+    <div class="container">
+                <div class="logo">
+                <img src="assets/logo.png" alt="Mi Vivienda LMO" class="logo-img">
+                    <div class="logo-text">
+                        <div class="logo-line-1">Mi Vivienda</div>
+                        <div class="logo-line-2">
+                            <span class="acronym">
+                                <span class="letter" data-full="La">L</span>
+                                <span class="letter" data-full="Mejor">M</span>
+                                <span class="letter" data-full="Opción">O</span>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <nav class="navigation">
+            <a href="#inicio">Inicio</a>
+            <a href="#propiedades">Propiedades</a>
+            <a href="#contacto">Contacto</a>
+        </nav>
+            </div>
+        </div>
+    </div>
+    
+    </div>
+</header>
+
+<!-- HERO ESCRITORIO MEJORADO -->
+<section class="hero-desktop" id="inicio">
+    <div class="hero-background"></div>
+    <div class="hero-overlay">
+        <div class="container">
+            <div class="hero-desktop-content">
+                <h1>Vive la Experiencia de Tu Próximo Hogar</h1>
+                <p class="hero-subtitle">Descubre Propiedades Únicas Con Tours 360° Inmersivos</p>
+                <div class="hero-buttons">
+                    <a href="#propiedades" class="btn-hero-primary">Explorar Propiedades</a>
+                    <a href="https://wa.me/573168350472?text=Hola,%20estoy%20interesado%20en%20conocer%20más%20sobre%20sus%20propiedades%20disponibles." 
+                       target="_blank" 
+                       class="btn-hero-secondary">Contáctanos</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- HERO MÓVIL MEJORADO -->
+<section class="hero-mobile" id="inicio-mobile">
+    <div class="container">
+        <div class="hero-mobile-content">
+            <h1>Vive la Experiencia de Tu Próximo Hogar</h1>
+            <p>Descubre Propiedades Únicas Con Tours 360° Inmersivos</p>
+            <div class="hero-buttons">
+                <a href="#propiedades" class="btn-hero-primary">Explorar Propiedades</a>
+                <a href="https://wa.me/573168350472?text=Hola,%20estoy%20interesado%20en%20conocer%20más%20sobre%20sus%20propiedades%20disponibles." 
+                   target="_blank" 
+                   class="btn-hero-secondary">Contáctanos</a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- SECCIÓN DE PROPIEDADES COMPACTA -->
+<!-- SECCIÓN DE PROPIEDADES CON PAGINACIÓN -->
+<section class="properties-section" id="propiedades">
+    <div class="container">
+
+        
+        <!-- CONTADORES SUPERIORES -->
+         <div><br></b></div>
+        <div class="counters-section">
+            <div class="total-counter" id="total-counter">
+                Cargando Inmuebles Disponibles...
+            </div>
+        </div>
+        
+        <!-- FILTROS COMPACTOS -->
+        <div class="filters-section">
+            <div class="container">
+                <h2>🔍 Encuentra Tu Mejor Opción Inmobiliaria</h2>
+                
+                <div class="filters-grid">
+                    <!-- [Mantén todos los filtros igual que antes] -->
+                    <div class="filter-group">
+                        <label>🏙️ Ciudad</label>
+                        <select id="filter-city">
+                            <option value="">Todas</option>
+                        </select>
+                    </div>
+
+                    <div class="filter-group">
+                        <label>📍 Zona</label>
+                        <select id="filter-zone">
+                            <option value="">Todas</option>
+                        </select>
+                    </div>
+
+                    <div class="filter-group">
+                        <label>🛏️ Habitaciones</label>
+                        <select id="filter-rooms">
+                            <option value="">Todas</option>
+                        </select>
+                    </div>
+
+                    <div class="filter-group">
+                        <label>🚿 Baños</label>
+                        <select id="filter-bathrooms">
+                            <option value="">Todos</option>
+                        </select>
+                    </div>
+
+                    <div class="filter-group">
+                        <label>🚗 Garajes</label>
+                        <select id="filter-parking">
+                            <option value="">Todos</option>
+                        </select>
+                    </div>
+
+                    <div class="filter-group compact">
+                        <label class="range-label">💰 Precio (COP)</label>
+                        <div class="range-inputs-compact">
+                            <input type="number" id="filter-min-price" placeholder="Mín">
+                            <span>a</span>
+                            <input type="number" id="filter-max-price" placeholder="Máx">
+                        </div>
+                    </div>
+
+                    <div class="filter-group compact">
+                        <label class="range-label">📏 Área (m²)</label>
+                        <div class="range-inputs-compact">
+                            <input type="number" id="filter-min-area" placeholder="Mín">
+                            <span>a</span>
+                            <input type="number" id="filter-max-area" placeholder="Máx">
+                        </div>
+                    </div>
+
+                    <div class="filter-group">
+                        <label>🔀 Ordenar</label>
+                        <select id="sort-by">
+                            <option value="random">Aleatorio</option>
+                            <option value="price_asc">Precio ↑</option>
+                            <option value="price_desc">Precio ↓</option>
+                            <option value="area_asc">Área ↑</option>
+                            <option value="area_desc">Área ↓</option>
+                            <option value="rooms_desc">Más Hab.</option>
+                        </select>
+                    </div>
+
+                    <!-- Botones y Contador -->
+                    <div class="filter-actions">
+                        <div class="results-counter" id="results-counter">
+                            0 de 0 Inmuebles
+                        </div>
+                        <button id="reset-filters" class="btn-reset">🔄 Limpiar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- CONTENEDOR DE PROPIEDADES -->
+        <div class="properties-grid" id="properties-grid">
+            <div class="loading">Cargando Propiedades...</div>
+        </div>
+
+        <!-- BOTÓN CARGAR MÁS -->
+        <div class="load-more-container">
+            <button id="load-more" class="btn-load-more" style="display: none;">
+                Cargar Más Inmuebles
+            </button>
+        </div>
+    </div>
+</section>
+
+    <!-- MODAL PARA DETALLES -->
+    <div class="modal" id="property-modal">
+        <div class="modal-content">
+            <span class="close-modal">&times;</span>
+            <div id="modal-content">
+                <!-- Aquí se cargarán los detalles de la propiedad -->
+            </div>
+        </div>
+    </div>
+
+    <!-- FOOTER - Pie de página -->
+    <footer class="footer" id="contacto">
+        <div class="container">
+            <div class="contact-info">
+                <h3>Contacto</h3>
+                <p>📞 Teléfono: +57 316 835 0472</p>
+                <p>✉️ Email: lamejoropcion.co@gmail.com</p>
+            </div>
+            <div class="copyright">
+                <p>&copy; 2025 Mi Vivienda LMO. Todos los derechos reservados.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- SCRIPTS -->
+<script src="js/logo-animation.js"></script>
+<script src="js/properties.js"></script>
+
+<!-- Script de verificación -->
+<script>
+    console.log('📄 index.html scripts cargados');
+    // Esta verificación ya no es necesaria, la quitamos
+</script>
+</body>
+</html>

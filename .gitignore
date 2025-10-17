@@ -1,0 +1,71 @@
+# ===========================================
+# ARCHIVOS DEL SISTEMA OPERATIVO
+# ===========================================
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
+# Linux
+*~
+
+
+# ===========================================
+# ARCHIVOS DE EDITORES DE CÓDIGO
+# ===========================================
+# VS Code
+.vscode/
+*.swp
+*.swo
+
+# Sublime Text
+*.sublime-*
+
+# Archivos temporales de editores
+*~
+
+
+# ===========================================
+# ARCHIVOS TEMPORALES Y BACKUPS
+# ===========================================
+# Logs
+*.log
+
+# Archivos de backup
+*.backup
+*.bak
+*.tmp
+
+# Archivos temporales
+temp/
+
+
+# ===========================================
+# ARCHIVOS SENSIBLES
+# ===========================================
+# Configuraciones locales
+config.local.js
+config.local.json
+
+# Archivos de entorno
+.env
+.env.local
+
+# Notas personales
+TODO.md
+notes.md
+personal-notes.txt
+
+
+# ===========================================
+# CARPETA DE ASSETS TEMPORALES
+# ===========================================
+
+temp-assets/
+uploads/
