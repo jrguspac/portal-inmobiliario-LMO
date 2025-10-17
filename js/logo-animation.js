@@ -1,70 +1,58 @@
-// js/logo-animation.js - Versión corregida
-console.log('✅ logo-animation.js cargado correctamente');
+// js/logo-animation.js - Versión móvil compatible
+console.log('✅ logo-animation.js cargado - móvil compatible');
 
-document.addEventListener('DOMContentLoaded', function() {
-    console.log('✅ DOM completamente cargado');
-    
+function initLogoAnimation() {
     const acronym = document.querySelector('.acronym');
-    console.log('🔍 Buscando elemento .acronym:', acronym);
     
     if (!acronym) {
         console.error('❌ No se encontró el elemento .acronym');
         return;
     }
     
-    console.log('✅ Elemento .acronym encontrado');
+    console.log('✅ Animación LMO activada para todos los dispositivos');
     let isExpanded = false;
     let animationInterval = null;
 
     function expandText() {
-        console.log('📖 Expandindo texto: LMO → La Mejor Opción');
         acronym.classList.add('expanded');
         isExpanded = true;
     }
 
     function contractText() {
-        console.log('📘 Contrayendo texto: La Mejor Opción → LMO');
         acronym.classList.remove('expanded');
         isExpanded = false;
     }
 
+    // Animación automática para TODOS los dispositivos
     function startAutoAnimation() {
-        console.log('🔄 Iniciando animación automática cada 8 segundos');
+        console.log('🔄 Animación automática activada cada 10 segundos');
         
-        // Primera expansión después de 3 segundos
+        // Primera animación después de 3 segundos
         setTimeout(() => {
             if (!isExpanded) {
                 expandText();
-                setTimeout(contractText, 7000); // Contraer después de 7 segundos
+                setTimeout(contractText, 3000);
             }
         }, 3000);
         
-        // Luego cada 21 segundos
+        // Luego cada 10 segundos
         animationInterval = setInterval(() => {
             if (!isExpanded) {
                 expandText();
-                setTimeout(contractText, 7000);
+                setTimeout(contractText, 3000);
             }
-        }, 21000);
+        }, 10000);
     }
 
-    // Control de hover
-    acronym.addEventListener('mouseenter', function() {
-        console.log('🐭 Mouse entró - expandiendo inmediatamente');
-        if (animationInterval) {
-            clearInterval(animationInterval);
-            animationInterval = null;
-        }
-        expandText();
-    });
-
-    acronym.addEventListener('mouseleave', function() {
-        console.log('🚪 Mouse salió - contrayendo y reanudando en 3 segundos');
-        contractText();
-        setTimeout(startAutoAnimation, 3000);
-    });
-
-    // Iniciar todo
+    // Iniciar la animación automática
     startAutoAnimation();
-    console.log('🎉 Animación del logo INICIADA correctamente');
-});
+    
+    console.log('🎉 Animación LMO → La Mejor Opción ACTIVADA en móvil');
+}
+
+// Esperar a que el DOM esté listo
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initLogoAnimation);
+} else {
+    initLogoAnimation();
+}
