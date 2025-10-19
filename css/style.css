@@ -208,6 +208,128 @@ body {
     font-weight: bold;
 }
 
+/* NAVEGACIÓN DESKTOP - Distribución horizontal */
+.navigation {
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+    margin-left: auto;
+}
+
+.navigation a:not(.dropdown-toggle) {
+    color: white;
+    text-decoration: none;
+    font-size: 0.9rem;
+    font-weight: 500;
+    padding: 0.5rem 1rem;
+    border-radius: 25px;
+    transition: all 0.3s ease;
+    white-space: nowrap;
+}
+
+.navigation a:not(.dropdown-toggle):hover {
+    background: rgba(217, 172, 33, 0.1);
+    color: #D9AC21;
+}
+
+/* DROPDOWN MEJORADO */
+.dropdown {
+    position: relative;
+}
+
+.dropdown-toggle {
+    color: white;
+    text-decoration: none;
+    font-size: 0.9rem;
+    font-weight: 500;
+    padding: 0.5rem 1rem;
+    border-radius: 25px;
+    transition: all 0.3s ease;
+    white-space: nowrap;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+}
+
+.dropdown-toggle:hover {
+    background: rgba(217, 172, 33, 0.1);
+    color: #D9AC21;
+}
+
+.dropdown-toggle::after {
+    content: '▼';
+    font-size: 0.7rem;
+    transition: transform 0.3s ease;
+}
+
+.dropdown:hover .dropdown-toggle::after {
+    transform: rotate(180deg);
+}
+
+.dropdown-menu {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    background: white;
+    min-width: 250px;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+    border-radius: 8px;
+    padding: 0.5rem 0;
+    z-index: 1000;
+    margin-top: 0.5rem;
+}
+
+.dropdown:hover .dropdown-menu {
+    display: block;
+    animation: fadeIn 0.3s ease;
+}
+
+/* BOTÓN MÓVIL */
+.mobile-menu-btn {
+    display: none;
+    background: none;
+    border: none;
+    color: white;
+    font-size: 1.5rem;
+    cursor: pointer;
+    padding: 0.5rem;
+    margin-left: auto;
+}
+
+/* RESPONSIVE */
+@media (max-width: 1024px) {
+    .navigation {
+        gap: 1.5rem;
+    }
+    
+    .navigation a:not(.dropdown-toggle),
+    .dropdown-toggle {
+        font-size: 0.85rem;
+        padding: 0.4rem 0.8rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .mobile-menu-btn {
+        display: block;
+    }
+    
+    .navigation {
+        display: none;
+    }
+    
+    .dropdown .dropdown-menu {
+        display: none !important;
+    }
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-5px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
 
 /* HERO SECTION */
 /* ===== HERO ESCRITORIO MEJORADO ===== */
@@ -1523,4 +1645,81 @@ body {
     font-weight: 500;
     z-index: 2;
     transition: all 0.5s ease;
+}
+
+/* DROPDOWN MEJORADO - MÁS COMERCIAL */
+.dropdown {
+    position: relative;
+}
+
+.dropdown-toggle {
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+    white-space: nowrap;
+}
+
+.dropdown-toggle::after {
+    content: '▼';
+    font-size: 0.7rem;
+    margin-left: 0.3rem;
+    transition: transform 0.3s ease;
+}
+
+.dropdown:hover .dropdown-toggle::after {
+    transform: rotate(180deg);
+}
+
+/* DROPDOWN MEJORADO - COLORES CORREGIDOS */
+.dropdown-menu {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    background: white;
+    min-width: 250px;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+    border-radius: 8px;
+    padding: 0.5rem 0;
+    z-index: 1000;
+    margin-top: 0.5rem;
+}
+
+.dropdown:hover .dropdown-menu {
+    display: block;
+    animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-5px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Ocultar dropdown en móvil */
+@media (max-width: 768px) {
+    .dropdown .dropdown-menu {
+        display: none !important;
+    }
+}
+
+/* REINICIAR COMPLETO ESTILOS DEL SUBMENÚ */
+.dropdown-menu a {
+    all: unset !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 0.8rem !important;
+    padding: 0.8rem 1.5rem !important;
+    color: #000000 !important;
+    background: #ffffff !important;
+    text-decoration: none !important;
+    font-size: 0.9rem !important;
+    font-weight: 600 !important;
+    cursor: pointer !important;
+    transition: all 0.2s ease !important;
+}
+
+.dropdown-menu a:hover {
+    color: #ffffff !important;
+    background: #1E3A8A !important;
 }

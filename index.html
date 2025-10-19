@@ -10,35 +10,95 @@
     <link rel="icon" type="image/png" href="assets/favicon.png">
     <link rel="apple-touch-icon" href="assets/favicon.png">
     <link rel="shortcut icon" href="assets/favicon.png">
+    <link rel="stylesheet" href="css/mobile-menu.css">
 </head>
 <body>
-    <!-- HEADER - Encabezado con logo y menú -->
- <header class="header">
+<!-- HEADER - Encabezado con logo y menú COMERCIAL -->
+<header class="header">
     <div class="container">
-                <div class="logo">
-                    <img src="assets/logo.png" alt="Mi Vivienda LMO" class="logo-img">
-                    <div class="logo-text">
-                        <div class="logo-line-1">Mi Vivienda</div>
-                        <div class="logo-line-2">
-                            <span class="acronym">
-                                <span class="letter" data-full="La">L</span>
-                                <span class="letter" data-full="Mejor">M</span>
-                                <span class="letter" data-full="Opción">O</span>
-                            </span>
-                        </div>
-                    </div>
+        <div class="logo">
+            <img src="assets/logo.png" alt="Mi Vivienda LMO" class="logo-img">
+            <div class="logo-text">
+                <div class="logo-line-1">Mi Vivienda</div>
+                <div class="logo-line-2">
+                    <span class="acronym">
+                        <span class="letter" data-full="La">L</span>
+                        <span class="letter" data-full="Mejor">M</span>
+                        <span class="letter" data-full="Opción">O</span>
+                    </span>
                 </div>
-            <nav class="navigation">
-            <a href="#inicio">Inicio</a>
-            <a href="#propiedades">Propiedades</a>
-            <a href="#contacto">Contacto</a>
-        </nav>
             </div>
         </div>
-    </div>
-    
+        
+        <!-- Botón menú móvil -->
+        <button class="mobile-menu-btn" id="mobile-menu-btn">
+            ☰
+        </button>
+
+        <!-- Navegación desktop COMERCIAL -->
+        <nav class="navigation">
+            <a href="index.html">Propiedades</a>
+            
+            <!-- Dropdown Financiación Mejorado -->
+            <div class="dropdown">
+                <a href="javascript:void(0)" class="dropdown-toggle">
+                    Financia tu Hogar o Inversión ▼
+                </a>
+                <div class="dropdown-menu">
+                    <a href="pages/credito-hipotecario.html">🏠 Crédito Hipotecario</a>
+                    <a href="pages/arriendo-opcion-compra.html">🔑 Arriendo con Opción Compra</a>
+                    <a href="pages/credito-sobre-hipoteca.html">💰 Crédito sobre Hipoteca</a>
+                </div>
+            </div>
+            
+            <a href="pages/inicio.html">Nosotros</a>
+            <a href="pages/contacto.html">Contacto</a>
+        </nav>
     </div>
 </header>
+
+
+<!-- Bottom Sheet Overlay -->
+<div class="bottom-sheet-overlay" id="bottom-sheet-overlay">
+    <div class="bottom-sheet" id="bottom-sheet">
+        <div class="bottom-sheet-header">
+            <h3>Navegación</h3>
+            <button class="close-bottom-sheet" id="close-bottom-sheet">×</button>
+        </div>
+        <div class="bottom-sheet-content">
+            <a href="index.html" class="bottom-sheet-link">
+                <span class="icon">📊</span>
+                Catálogo de Propiedades
+            </a>
+            <a href="pages/credito-hipotecario.html" class="bottom-sheet-link">
+                <span class="icon">📈</span>
+                Crédito Hipotecario
+            </a>
+            <a href="pages/arriendo-opcion-compra.html" class="bottom-sheet-link">
+                <span class="icon">🔑</span>
+                Arriendo con Opción Compra
+            </a>
+            <a href="pages/credito-sobre-hipoteca.html" class="bottom-sheet-link">
+                <span class="icon">🏦</span>
+                Crédito sobre Hipoteca
+            </a>
+            <a href="pages/blog.html" class="bottom-sheet-link">
+                <span class="icon">📚</span>
+                Blog/Recursos
+            </a>
+            <a href="pages/inicio.html" class="bottom-sheet-link">
+                <span class="icon">🏠</span>
+                Nosotros
+            </a>
+            <a href="pages/contacto.html" class="bottom-sheet-link">
+                <span class="icon">📞</span>
+                Contactanos
+            </a>
+
+        </div>
+    </div>
+</div>
+
 
 <!-- HERO ESCRITORIO MEJORADO -->
 <section class="hero-desktop" id="inicio">
@@ -212,11 +272,13 @@
     <!-- SCRIPTS -->
 <script src="js/logo-animation.js"></script>
 <script src="js/properties.js"></script>
-
+<script src="js/mobile-menu.js"></script>
+<script src="js/navigation.js"></script>
 <!-- Script de verificación -->
 <script>
     console.log('📄 index.html scripts cargados');
     // Esta verificación ya no es necesaria, la quitamos
 </script>
+
 </body>
 </html>
