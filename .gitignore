@@ -69,3 +69,11 @@ personal-notes.txt
 
 temp-assets/
 uploads/
+
+# .gitignore
+.DS_Store
+Thumbs.db
+node_modules/
+*.log
+.env
+.htaccess

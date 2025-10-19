@@ -1,5 +1,5 @@
-// js/properties.js - Sistema con paginación para mejor performance
-console.log('✅ properties.js cargado - con paginación');
+// js/properties.js - Sistema con paginación y prevalencia de filtros
+console.log('✅ properties.js cargado - con paginación y prevalencia');
 
 // Variables globales
 let allProperties = [];
@@ -17,13 +17,22 @@ let currentFilters = {
 };
 let sortBy = 'random';
 const WHATSAPP_NUMBER = "573168350472";
-const ITEMS_PER_PAGE = 21; // Número de ítems a mostrar por página
+const ITEMS_PER_PAGE = 21;
 let currentPage = 1;
 let totalFilteredItems = 0;
 
+// Orden de prevalencia (de más a menos importante)
+const FILTER_PRECEDENCE = [
+    'filter-city',     // 1. Ciudad
+    'filter-zone',     // 2. Zona  
+    'filter-rooms',    // 3. Habitaciones
+    'filter-bathrooms', // 4. Baños
+    'filter-parking'   // 5. Garajes
+];
+
 // Cuando el DOM esté listo
 document.addEventListener('DOMContentLoaded', function() {
-    console.log('🚀 Iniciando sistema con paginación');
+    console.log('🚀 Iniciando sistema con prevalencia de filtros');
     loadProperties();
     setupEventListeners();
 });
@@ -45,7 +54,7 @@ async function loadProperties() {
         updateTotalCounter(allProperties.length);
         
         initializeFilters();
-        applyFilters();
+        applyFiltersWithPrecedence();
         
     } catch (error) {
         console.error('❌ Error cargando propiedades:', error);
@@ -55,24 +64,26 @@ async function loadProperties() {
 
 // Configurar event listeners
 function setupEventListeners() {
-    // Filtros
+    // Filtros de prevalencia
     document.getElementById('filter-city').addEventListener('change', function() {
         updateZoneFilter();
-        applyFilters();
+        applyFiltersWithPrecedence();
     });
-    document.getElementById('filter-zone').addEventListener('change', applyFilters);
-    document.getElementById('filter-rooms').addEventListener('change', applyFilters);
-    document.getElementById('filter-bathrooms').addEventListener('change', applyFilters);
-    document.getElementById('filter-parking').addEventListener('change', applyFilters);
-    document.getElementById('filter-min-price').addEventListener('input', applyFilters);
-    document.getElementById('filter-max-price').addEventListener('input', applyFilters);
-    document.getElementById('filter-min-area').addEventListener('input', applyFilters);
-    document.getElementById('filter-max-area').addEventListener('input', applyFilters);
+    document.getElementById('filter-zone').addEventListener('change', applyFiltersWithPrecedence);
+    document.getElementById('filter-rooms').addEventListener('change', applyFiltersWithPrecedence);
+    document.getElementById('filter-bathrooms').addEventListener('change', applyFiltersWithPrecedence);
+    document.getElementById('filter-parking').addEventListener('change', applyFiltersWithPrecedence);
+    
+    // Filtros base (precio y área - siempre se aplican)
+    document.getElementById('filter-min-price').addEventListener('input', applyFiltersWithPrecedence);
+    document.getElementById('filter-max-price').addEventListener('input', applyFiltersWithPrecedence);
+    document.getElementById('filter-min-area').addEventListener('input', applyFiltersWithPrecedence);
+    document.getElementById('filter-max-area').addEventListener('input', applyFiltersWithPrecedence);
     
     // Ordenamiento
     document.getElementById('sort-by').addEventListener('change', function() {
         sortBy = this.value;
-        applyFilters();
+        applyFiltersWithPrecedence();
     });
     
     // Botón reset
@@ -86,6 +97,8 @@ function setupEventListeners() {
     document.getElementById('property-modal').addEventListener('click', function(e) {
         if (e.target === this) closeModal();
     });
+    
+    console.log('✅ Event listeners configurados con sistema de prevalencia');
 }
 
 // Actualizar contador total
@@ -155,59 +168,137 @@ function initializeFilters() {
     document.getElementById('filter-max-area').placeholder = `Máx: ${maxArea}m²`;
 }
 
-// Aplicar filtros
-function applyFilters() {
-    currentFilters.city = document.getElementById('filter-city').value;
-    currentFilters.zone = document.getElementById('filter-zone').value;
-    currentFilters.rooms = document.getElementById('filter-rooms').value;
-    currentFilters.bathrooms = document.getElementById('filter-bathrooms').value;
-    currentFilters.parking = document.getElementById('filter-parking').value;
-    currentFilters.minPrice = document.getElementById('filter-min-price').value;
-    currentFilters.maxPrice = document.getElementById('filter-max-price').value;
-    currentFilters.minArea = document.getElementById('filter-min-area').value;
-    currentFilters.maxArea = document.getElementById('filter-max-area').value;
+// ========== SISTEMA DE PREVALENCIA DE FILTROS ==========
+
+function applyFiltersWithPrecedence() {
+    console.log('🔍 Aplicando filtros con prevalencia...');
     
-    console.log('🔍 Aplicando filtros...');
+    // Obtener todos los filtros activos
+    const activeFilters = getActiveFilters();
     
-    // Filtrar propiedades
-    filteredProperties = allProperties.filter(property => {
-        if (currentFilters.city && property.ciudad !== currentFilters.city) return false;
-        if (currentFilters.zone && property.zona_grande !== currentFilters.zone) return false;
+    if (activeFilters.length === 0) {
+        // Sin filtros, mostrar todo
+        applyBaseFilters();
+        return;
+    }
+    
+    // Aplicar filtros en orden de prevalencia hasta encontrar resultados
+    let results = [];
+    let appliedFilters = [];
+    let ignoredFilters = [];
+    
+    for (const filterId of FILTER_PRECEDENCE) {
+        const filter = activeFilters.find(f => f.id === filterId);
+        if (!filter) continue;
         
-        if (currentFilters.rooms) {
-            const rooms = parseInt(property.num_habitaciones) || 0;
-            const filterRooms = parseInt(currentFilters.rooms);
-            if (filterRooms >= 4 && rooms < filterRooms) return false;
-            if (filterRooms < 4 && rooms !== filterRooms) return false;
+        // Intentar aplicar este filtro + los ya aplicados
+        const testFilters = [...appliedFilters, filter];
+        const testResults = testFilterCombination(testFilters);
+        
+        if (testResults.length > 0) {
+            // Este filtro SÍ produce resultados, lo aplicamos
+            results = testResults;
+            appliedFilters.push(filter);
+        } else {
+            // Este filtro NO produce resultados, lo ignoramos
+            ignoredFilters.push(filter);
         }
-        
-        if (currentFilters.bathrooms) {
-            const bathrooms = parseInt(property.banos) || 0;
-            const filterBathrooms = parseInt(currentFilters.bathrooms);
-            if (filterBathrooms >= 3 && bathrooms < filterBathrooms) return false;
-            if (filterBathrooms < 3 && bathrooms !== filterBathrooms) return false;
-        }
-        
-        if (currentFilters.parking) {
-            const parking = parseInt(property.garajes) || 0;
-            const filterParking = parseInt(currentFilters.parking);
-            if (filterParking >= 2 && parking < filterParking) return false;
-            if (filterParking < 2 && parking !== filterParking) return false;
-        }
-        
+    }
+    
+    // Aplicar el resultado final
+    applyFinalFilterResult(results, appliedFilters, ignoredFilters);
+}
+
+function getActiveFilters() {
+    const filters = [];
+    
+    const city = document.getElementById('filter-city').value;
+    const zone = document.getElementById('filter-zone').value;
+    const rooms = document.getElementById('filter-rooms').value;
+    const bathrooms = document.getElementById('filter-bathrooms').value;
+    const parking = document.getElementById('filter-parking').value;
+    
+    if (city) filters.push({ id: 'filter-city', value: city, name: 'Ciudad', display: city });
+    if (zone) filters.push({ id: 'filter-zone', value: zone, name: 'Zona', display: zone });
+    if (rooms) filters.push({ 
+        id: 'filter-rooms', 
+        value: rooms, 
+        name: 'Habitaciones', 
+        display: rooms === '3' ? '3+' : rooms 
+    });
+    if (bathrooms) filters.push({ 
+        id: 'filter-bathrooms', 
+        value: bathrooms, 
+        name: 'Baños', 
+        display: bathrooms === '3' ? '3+' : bathrooms 
+    });
+    if (parking) filters.push({ 
+        id: 'filter-parking', 
+        value: parking, 
+        name: 'Garajes', 
+        display: parking 
+    });
+    
+    return filters;
+}
+
+function testFilterCombination(filters) {
+    let results = [...allProperties];
+    
+    // Aplicar filtros base primero (precio y área)
+    results = applyBasePriceAreaFilters(results);
+    
+    // Aplicar filtros de prevalencia
+    filters.forEach(filter => {
+        results = results.filter(property => {
+            switch(filter.id) {
+                case 'filter-city':
+                    return property.ciudad === filter.value;
+                case 'filter-zone':
+                    return property.zona_grande === filter.value;
+                case 'filter-rooms':
+                    const rooms = parseInt(property.num_habitaciones) || 0;
+                    const filterRooms = parseInt(filter.value);
+                    return filterRooms === 3 ? rooms >= 3 : rooms === filterRooms;
+                case 'filter-bathrooms':
+                    const bathrooms = parseInt(property.banos) || 0;
+                    const filterBathrooms = parseInt(filter.value);
+                    return filterBathrooms === 3 ? bathrooms >= 3 : bathrooms === filterBathrooms;
+                case 'filter-parking':
+                    const parking = parseInt(property.garajes) || 0;
+                    const filterParking = parseInt(filter.value);
+                    return filterParking >= 2 ? parking >= filterParking : parking === filterParking;
+                default:
+                    return true;
+            }
+        });
+    });
+    
+    return results;
+}
+
+function applyBasePriceAreaFilters(properties) {
+    const minPrice = document.getElementById('filter-min-price').value;
+    const maxPrice = document.getElementById('filter-max-price').value;
+    const minArea = document.getElementById('filter-min-area').value;
+    const maxArea = document.getElementById('filter-max-area').value;
+    
+    return properties.filter(property => {
         const price = parseInt(property.precio_venta) || 0;
-        if (currentFilters.minPrice && price < parseInt(currentFilters.minPrice)) return false;
-        if (currentFilters.maxPrice && price > parseInt(currentFilters.maxPrice)) return false;
-        
         const area = parseInt(property.area) || 0;
-        if (currentFilters.minArea && area < parseInt(currentFilters.minArea)) return false;
-        if (currentFilters.maxArea && area > parseInt(currentFilters.maxArea)) return false;
+        
+        if (minPrice && price < parseInt(minPrice)) return false;
+        if (maxPrice && price > parseInt(maxPrice)) return false;
+        if (minArea && area < parseInt(minArea)) return false;
+        if (maxArea && area > parseInt(maxArea)) return false;
         
         return true;
     });
-    
-    // Actualizar opciones dinámicas
-    updateDynamicFilterOptions();
+}
+
+function applyFinalFilterResult(results, appliedFilters, ignoredFilters) {
+    // Actualizar las propiedades filtradas
+    filteredProperties = results;
     
     // Aplicar ordenamiento
     sortProperties();
@@ -216,9 +307,86 @@ function applyFilters() {
     currentPage = 1;
     totalFilteredItems = filteredProperties.length;
     
-    console.log(`📊 ${totalFilteredItems} propiedades encontradas después de filtrar`);
+    // Actualizar opciones dinámicas de filtros
+    updateDynamicFilterOptions();
+    
+    // Renderizar resultados
     renderProperties();
     updateResultsCounter();
+    
+    // Mostrar mensaje informativo si se ignoraron filtros
+    if (ignoredFilters.length > 0) {
+        showPrecedenceMessage(appliedFilters, ignoredFilters);
+    } else {
+        hidePrecedenceMessage();
+    }
+    
+    console.log(`📊 Filtros aplicados: ${appliedFilters.length}, Ignorados: ${ignoredFilters.length}`);
+}
+
+function showPrecedenceMessage(appliedFilters, ignoredFilters) {
+    let message = document.getElementById('precedence-message');
+    if (!message) {
+        message = document.createElement('div');
+        message.id = 'precedence-message';
+        message.style.cssText = `
+            background: #e3f2fd;
+            border: 1px solid #90caf9;
+            color: #1565c0;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 8px;
+            font-size: 14px;
+        `;
+        const propertiesSection = document.querySelector('.properties-section .container');
+        propertiesSection.insertBefore(message, document.getElementById('properties-grid'));
+    }
+    
+    const appliedText = appliedFilters.map(f => 
+        `<strong>${f.name}:</strong> ${f.display}`
+    ).join(', ');
+    
+    const ignoredText = ignoredFilters.map(f => 
+        `<strong>${f.name}:</strong> ${f.display}`
+    ).join(', ');
+    
+    message.innerHTML = `
+        <div style="display: flex; align-items: center; gap: 10px;">
+            <span style="font-size: 18px;">💡</span>
+            <div>
+                <strong>Mostrando resultados para:</strong> ${appliedText}<br>
+                <em>No encontramos propiedades que cumplan con: ${ignoredText}</em>
+            </div>
+            <button onclick="this.parentElement.parentElement.style.display='none'" 
+                    style="margin-left: auto; background: none; border: none; font-size: 18px; cursor: pointer; color: #666;">
+                ×
+            </button>
+        </div>
+    `;
+    message.style.display = 'block';
+}
+
+function hidePrecedenceMessage() {
+    const message = document.getElementById('precedence-message');
+    if (message) {
+        message.style.display = 'none';
+    }
+}
+
+function applyBaseFilters() {
+    // Aplicar solo filtros base (precio, área)
+    filteredProperties = applyBasePriceAreaFilters(allProperties);
+    
+    sortProperties();
+    currentPage = 1;
+    totalFilteredItems = filteredProperties.length;
+    
+    // Actualizar opciones dinámicas
+    updateDynamicFilterOptions();
+    
+    renderProperties();
+    updateResultsCounter();
+    hidePrecedenceMessage();
 }
 
 // Actualizar opciones de filtros dinámicamente
@@ -239,25 +407,63 @@ function updateSelectOptions(selectId, values, defaultText) {
     
     select.innerHTML = `<option value="">${defaultText}</option>`;
     
-    values.forEach(value => {
-        const option = document.createElement('option');
-        option.value = value;
+    if (selectId === 'filter-rooms') {
+        // OPCIONES FIJAS PARA HABITACIONES - SOLO LAS QUE EXISTEN
+        const roomOptions = [
+            { value: '1', text: '1 habitacion', exists: values.includes(1) },
+            { value: '2', text: '2 habitaciones', exists: values.includes(2) },
+            { value: '3', text: '3+ habitaciones', exists: values.some(v => v >= 3) }
+        ];
         
-        if (selectId === 'filter-rooms' && value >= 4) {
-            option.textContent = `${value}+ habitaciones`;
-        } else if (selectId === 'filter-bathrooms' && value >= 3) {
-            option.textContent = `${value}+ baños`;
-        } else if (selectId === 'filter-parking' && value >= 2) {
-            option.textContent = `${value}+ parqueaderos`;
-        } else {
-            option.textContent = `${value} ${selectId === 'filter-rooms' ? 'habitación' : selectId === 'filter-bathrooms' ? 'baño' : 'parqueadero'}${value > 1 ? 'es' : ''}`;
-        }
+        roomOptions.forEach(optionData => {
+            if (optionData.exists) {
+                const option = document.createElement('option');
+                option.value = optionData.value;
+                option.textContent = optionData.text;
+                select.appendChild(option);
+            }
+        });
         
-        select.appendChild(option);
-    });
+    } else if (selectId === 'filter-bathrooms') {
+        // OPCIONES FIJAS PARA BAÑOS - SOLO LAS QUE EXISTEN
+        const bathroomOptions = [
+            { value: '1', text: '1 baño', exists: values.includes(1) },
+            { value: '2', text: '2 baños', exists: values.includes(2) },
+            { value: '3', text: '3+ baños', exists: values.some(v => v >= 3) }
+        ];
+        
+        bathroomOptions.forEach(optionData => {
+            if (optionData.exists) {
+                const option = document.createElement('option');
+                option.value = optionData.value;
+                option.textContent = optionData.text;
+                select.appendChild(option);
+            }
+        });
+        
+    } else if (selectId === 'filter-parking') {
+        // Para parqueaderos mantener la lógica original pero solo mostrar opciones existentes
+        const availableValues = values.filter(value => value > 0);
+        availableValues.forEach(value => {
+            const option = document.createElement('option');
+            option.value = value;
+            
+            if (value >= 2) {
+                option.textContent = `${value}+ parqueaderos`;
+            } else {
+                option.textContent = `${value} ${value === 1 ? 'parqueadero' : 'parqueaderos'}`;
+            }
+            
+            select.appendChild(option);
+        });
+    }
     
-    if (values.includes(parseInt(currentValue))) {
+    // Mantener el valor seleccionado si existe y está disponible
+    if (currentValue && select.querySelector(`option[value="${currentValue}"]`)) {
         select.value = currentValue;
+    } else {
+        // Si la opción seleccionada ya no está disponible, limpiar la selección
+        select.value = '';
     }
 }
 
@@ -299,6 +505,7 @@ function resetFilters() {
     console.log('🔄 Reiniciando filtros');
     
     document.getElementById('filter-city').value = '';
+    document.getElementById('filter-zone').value = '';
     document.getElementById('filter-rooms').value = '';
     document.getElementById('filter-bathrooms').value = '';
     document.getElementById('filter-parking').value = '';
@@ -310,7 +517,7 @@ function resetFilters() {
     
     sortBy = 'random';
     updateZoneFilter();
-    applyFilters();
+    applyFiltersWithPrecedence();
 }
 
 // Renderizar propiedades (solo las de la página actual)
@@ -339,7 +546,7 @@ function renderProperties() {
     // Mostrar/ocultar botón "Cargar más"
     if (endIndex < totalFilteredItems) {
         loadMoreBtn.style.display = 'block';
-        loadMoreBtn.innerHTML = `Cargar más (${Math.min(ITEMS_PER_PAGE, totalFilteredItems - endIndex)} más)`;
+        loadMoreBtn.innerHTML = `Cargar más inmuebles...`;;
     } else {
         loadMoreBtn.style.display = 'none';
     }
@@ -352,24 +559,46 @@ function renderProperties() {
 
 // Cargar más propiedades
 function loadMoreProperties() {
-    currentPage++;
-    renderProperties();
-    updateResultsCounter();
+    // Guardar la posición actual antes de cargar
+    const scrollPosition = window.pageYOffset;
     
-    // Scroll suave hacia el final de las propiedades cargadas
+    currentPage++;
+    const loadMoreContainer = document.querySelector('.load-more-container');
+    loadMoreContainer.innerHTML = '<div class="loading">Cargando más propiedades...</div>';
+
     setTimeout(() => {
+        const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
+        const endIndex = startIndex + ITEMS_PER_PAGE;
+        const propertiesToShow = filteredProperties.slice(0, endIndex);
+        
+        // Actualizar renderizado
         const grid = document.getElementById('properties-grid');
-        grid.lastElementChild.scrollIntoView({ 
-            behavior: 'smooth', 
-            block: 'nearest' 
-        });
-    }, 100);
+        grid.innerHTML = propertiesToShow.map(property => createPropertyCard(property)).join('');
+        
+        // Actualizar contadores
+        updateResultsCounter();
+        
+        // Restaurar posición de scroll después de renderizar
+        window.scrollTo(0, scrollPosition);
+        
+        // Inicializar eventos para los nuevos tours
+        initializeTourEvents();
+        
+        if (endIndex >= filteredProperties.length) {
+            loadMoreContainer.innerHTML = '<div class="no-more">No hay más propiedades para mostrar</div>';
+        } else {
+            loadMoreContainer.innerHTML = `
+            <button id="load-more" class="btn-load-more">
+                Cargar más inmuebles...
+            </button>
+        `;
+            // Re-asignar evento al nuevo botón
+            document.getElementById('load-more').addEventListener('click', loadMoreProperties);
+        }
+    }, 500);
 }
 
-// El resto de las funciones se mantienen igual (createPropertyCard, formatCurrency, openModal, etc.)
-// ... [Mantén todas las demás funciones igual que antes]
-
-// Crear tarjeta de propiedad (función igual)
+// Crear tarjeta de propiedad
 function createPropertyCard(property) {
     const hasDiscount = property.precio_anterior && property.precio_anterior > property.precio_venta;
     
@@ -574,4 +803,3 @@ function showErrorMessage() {
 document.addEventListener('keydown', function(e) {
     if (e.key === 'Escape') closeModal();
 });
-
