@@ -1723,3 +1723,113 @@ body {
     color: #ffffff !important;
     background: #1E3A8A !important;
 }
+
+/* ====== AGREGAR AL FINAL DEL ARCHIVO style.css ====== */
+/* (Busca el final del archivo, antes del último "}") */
+
+/* Banner para modo compartir */
+.share-mode-banner {
+    background: linear-gradient(135deg, #1E3A8A 0%, #2D4DA8 100%);
+    color: white;
+    padding: 12px 20px;
+    box-shadow: 0 4px 12px rgba(30, 58, 138, 0.25);
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    border-bottom: 3px solid #D9AC21;
+    animation: slideDown 0.3s ease-out;
+}
+
+@keyframes slideDown {
+    from {
+        transform: translateY(-100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+.share-banner-content {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 15px;
+}
+
+.share-banner-content span {
+    font-weight: 600;
+    font-size: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.btn-exit-share {
+    background: #D9AC21;
+    color: #1E3A8A;
+    border: none;
+    padding: 8px 20px;
+    border-radius: 6px;
+    font-weight: 600;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    white-space: nowrap;
+}
+
+.btn-exit-share:hover {
+    background: #E8BC3A;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(217, 172, 33, 0.3);
+}
+
+/* Botón compartir en modal */
+.btn-share-link {
+    background: #4A5568;
+    color: white;
+    border: none;
+    padding: 12px 20px;
+    border-radius: 6px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-top: 10px;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+.btn-share-link:hover {
+    background: #2D3748;
+    transform: translateY(-2px);
+}
+
+/* Ajuste para móviles */
+@media (max-width: 768px) {
+    .share-banner-content {
+        flex-direction: column;
+        text-align: center;
+        gap: 10px;
+    }
+    
+    .share-banner-content span {
+        font-size: 0.9rem;
+    }
+    
+    .btn-exit-share {
+        width: 100%;
+        padding: 10px;
+    }
+    
+    .btn-share-link {
+        padding: 10px 15px;
+        font-size: 0.9rem;
+    }
+}
